@@ -123,24 +123,24 @@ function(input, output, session) {
     N_total       = 2 * ceiling(deff*input$Indep_N_per_group)
     gamma_div_k   = gamma_list %>% imap(~ .x/.y)
     M_per_group   = ceiling(N_per_group * sum(unlist(gamma_div_k)))
-    M_total_clus  = 2 * ceiling(N_per_group * sum(unlist(gamma_div_k))) # calc num of clusters per group and multiply by 2
-    M_total_ind   = ceiling(N_total * sum(unlist(gamma_div_k))) # calc num of clusters based on total number of obs (as clusters do not assign to groups)
+    M_total_clus  = 2 * ceiling(N_per_group * sum(unlist(gamma_div_k))) # calc num of clusters per arm and multiply by 2
+    M_total_ind   = ceiling(N_total * sum(unlist(gamma_div_k))) # calc num of clusters based on total number of obs (as clusters do not assign to arms)
     
     # data frame of results, including check for if deff is less than or equal to 0
     if (is.na(deff) | (deff <= 0)) {
       if (input$rand_method == "Cluster") {
         # Row names for output
-        row.names = c("Design Effect", "Number Observations per Group", "Number Clusters per Group", "Number Observations Total", "Number Clusters Total")
+        row.names = c("Design Effect", "Number Observations per Trial Arm", "Number Clusters per Trial Arm", "Number Observations Total", "Number Clusters Total")
         data.frame("Result" = row.names, "Value" = c(NA, NA, NA, NA, NA))
       } else if (input$rand_method == "Individual") {
         # Row names for output
-        row.names = c("Design Effect", "Number Observations per Group", "Number Observations Total", "Number Clusters Total")
+        row.names = c("Design Effect", "Number Observations per Trial Arm", "Number Observations Total", "Number Clusters Total")
         data.frame("Result" = row.names, "Value" = c(NA, NA, NA, NA))
       }
     } else if (deff > 0) {
       if (input$rand_method == "Cluster") {
         # Row names for output
-        row.names = c("Design Effect", "Number Observations per Group", "Number Clusters per Group", "Number Observations Total", "Number Clusters Total")
+        row.names = c("Design Effect", "Number Observations per Trial Arm", "Number Clusters per Trial Arm", "Number Observations Total", "Number Clusters Total")
         
         data.frame("Result" = row.names, "Value" = c(as.character(format(round(deff, digits = 4), nsmall = 4)),
                                                      as.character(format(N_per_group, nsmall = 0)),
@@ -149,7 +149,7 @@ function(input, output, session) {
                                                      as.character(format(M_total_clus, nsmall = 0))))
       } else if (input$rand_method == "Individual") {
         # Row names for output
-        row.names = c("Design Effect", "Number Observations per Group", "Number Observations Total", "Number Clusters Total")
+        row.names = c("Design Effect", "Number Observations per Trial Arm", "Number Observations Total", "Number Clusters Total")
         
         data.frame("Result" = row.names, "Value" = c(as.character(format(round(deff, digits = 4), nsmall = 4)),
                                                      as.character(format(N_per_group, nsmall = 0)),
@@ -172,10 +172,10 @@ function(input, output, session) {
       error_msg = "The ICC must be between -1 and 1."
     }
     if (input$pc_I < 0 | input$pc_I > 100){
-      error_msg = "The intervention group outcome prevalence must be between 0 and 100."
+      error_msg = "The intervention arm outcome prevalence must be between 0 and 100."
     }
     if (input$pc_C < 0 | input$pc_C > 100){
-      error_msg = "The control group outcome prevalence must be between 0 and 100."
+      error_msg = "The control arm outcome prevalence must be between 0 and 100."
     }
     if (sum(unlist(perc_list)) != 100){
       error_msg = "The cluster percentages must sum to 100."
